@@ -291,9 +291,15 @@ GitHub Milestones 기능을 그대로 사용. 진행률 자동 계산.
 ### 6.1 동기화 방식
 - **Hermes cron**이 주기적으로 실행
 - GitHub Issues → Obsidian 마크다운 파일 변환
-- cron 주기: 1시간마다 (또는 매일 3회)
+- **cron 주기: 매일 3회** (아침 07:00 / 점심 13:00 / 저녁 20:00)
+  - 실시간 동기화 불필요 (초연 확인됨)
+  - rate limit 소비 최소화 (1시간마다 = 24회/일 vs 3회/일)
 
 ### 6.2 템플릿 구조
+
+> **필요 플러그인**: Obsidian **Templater** 커뮤니티 플러그인.  
+> `{{date: YYYY-MM-DD (ddd)}}` 같은 형식은 Obsidian 기본 템플릿이 아닌 Templater 문법.  
+> Templater 미설치 시 기본 `{{date}}` (YYYY-MM-DD 고정)만 동작.
 
 #### Daily Note
 ```markdown
@@ -329,6 +335,16 @@ GitHub Milestones 기능을 그대로 사용. 진행률 자동 계산.
 - `daily.md`
 - `weekly.md`
 - `monthly.md`
+
+### 6.4 Obsidian vault 경로 설정
+Obsidian vault 경로는 **Hermes cron 설정에 직접 저장** (웹앱 UI와 무관).
+
+**구조:**
+1. 웹앱 설정 화면에서 vault 경로 입력 → 설정 값을 **GitHub Issue에 저장** (예: `#1` 설정용 Issue)
+2. **Hermes cron**이 실행될 때 GitHub Issue에서 경로를 읽어서 동기화
+3. 또는 간단하게 **Hermes cron 스크립트 내부에 경로 하드코딩** (초연 개인용이므로 변경 빈도 낮음)
+
+**권장:** 초기에는 Hermes cron 스크립트에 하드코딩. 필요시 웹앱 설정 연동은 P1 이후.
 
 ---
 
@@ -374,7 +390,7 @@ jobs:
 
 | Phase | 범위 | 비고 |
 |-------|------|------|
-| **P0** | 웹앱(React+Vite) + GitHub Issues CRUD + Obsidian 기록 | 현재 진행 중 |
+| **P0** | 웹앱(React+Vite) + GitHub Issues CRUD + Obsidian 기록 | **준비 완료** (저장소 생성 + SPEC 완료, 개발 시작 대기) |
 | **P1-A** | Google Calendar 연동 | P0 완료 후 |
 | **P1-B** | Todoist + 템플릿 + 쌍방연결 | P1-A 완료 후 |
 | **P2** | Android 네이티브 앱 (Kotlin) | 장기 |
