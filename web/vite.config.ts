@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
+  base: '/life-manager/', // GitHub Pages 서브경로
   plugins: [
     react(),
     tailwindcss(),
