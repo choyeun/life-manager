@@ -2,6 +2,9 @@ import { Link, useLocation } from 'react-router-dom'
 
 const tabs = [
   { path: '/todos', label: '📋 투두' },
+  { path: '/schedule', label: '📅 일정' },
+  { path: '/milestones', label: '🎯 마일스톤' },
+  { path: '/wishlist', label: '💭 위시' },
   { path: '/settings', label: '⚙️ 설정' },
 ]
 

@@ -127,9 +127,9 @@ export async function closeIssue(issueNumber: number): Promise<Issue> {
   })
   return mapIssue(data as any)
 }
-
 /** API 응답을 Issue 타입으로 변환 */
 function mapIssue(data: any): Issue {
+
   return {
     number: data.number,
     title: data.title,
@@ -146,4 +146,63 @@ function mapIssue(data: any): Issue {
     created_at: data.created_at,
     updated_at: data.updated_at,
   }
+}
+
+/** 일정 조회 */
+export async function fetchSchedules(): Promise<Issue[]> {
+  const octo = getOctokit()
+  const { data } = await octo.issues.listForRepo({
+    owner: OWNER,
+    repo: REPO,
+    state: 'open',
+    labels: '📅 schedule',
+    per_page: 100,
+  })
+  return data.map(mapIssue)
+}
+
+/** 위시리스트 조회 */
+export async function fetchWishlist(): Promise<Issue[]> {
+  const octo = getOctokit()
+  const { data } = await octo.issues.listForRepo({
+    owner: OWNER,
+    repo: REPO,
+    state: 'open',
+    labels: '💭 wishlist',
+    per_page: 100,
+  })
+  return data.map(mapIssue)
+}
+
+/** 마일스톤 목록 조회 */
+export async function fetchMilestones(): Promise<{ number: number; title: string; description: string; dueOn: string | null; openIssues: number; closedIssues: number }[]> {
+  const octo = getOctokit()
+  const { data } = await octo.issues.listMilestones({
+    owner: OWNER,
+    repo: REPO,
+    state: 'open',
+    sort: 'due_on',
+    direction: 'asc',
+  })
+  return data.map((m) => ({
+    number: m.number,
+    title: m.title,
+    description: m.description ?? '',
+    dueOn: m.due_on,
+    openIssues: m.open_issues,
+    closedIssues: m.closed_issues,
+  }))
+}
+
+/** 특정 마일스톤에 속한 Issue 조회 */
+export async function fetchMilestoneIssues(milestoneNumber: number): Promise<Issue[]> {
+  const octo = getOctokit()
+  const { data } = await octo.issues.listForRepo({
+    owner: OWNER,
+    repo: REPO,
+    state: 'all',
+    milestone: milestoneNumber.toString() as any,
+    per_page: 100,
+  })
+  return data.map(mapIssue)
 }
