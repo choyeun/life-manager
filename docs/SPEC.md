@@ -95,11 +95,11 @@ GitHub Issues를 Primary DB로 활용하여 일정/스케줄/마일스톤/위시
 
 ```markdown
 ---
-date: 2026-08-01
-due: 2026-08-05
-repeat: weekly      # 선택: daily/weekly/monthly/yearly
+date: 2026-08-01        # 시작일
+due: 2026-08-05         # 마감일
+repeat: weekly          # 선택: daily/weekly/monthly/yearly
 repeat_until: 2026-12-31  # 선택: 반복 종료일
-related: [42, 57]
+related: [42, 57]       # 연결된 Issue 번호
 ---
 
 # 작업 제목
@@ -142,11 +142,16 @@ GitHub Milestones 기능을 그대로 사용. 진행률 자동 계산.
 
 | 프론트매터 필드 | 타입 | 예시 | 설명 |
 |:---------------|:----|:-----|:-----|
-| `repeat` | string | `daily`, `weekly`, `monthly`, `yearly` | 반복 주기 |
+| `date` | date | `2026-08-01` | **시작일**. 일정/할일의 기준 날짜 |
+| `due` | date | `2026-08-05` | **마감일**. `date`와 다를 경우 마감 기한 표시 |
+| `repeat` | string | `weekly` | 반복 주기 |
 | `repeat_until` | date | `2026-12-31` | 반복 종료일 (생략 시 무기한) |
 
 **처리 로직:**
+- `repeat: daily` → 매일
 - `repeat: weekly` → 매주 같은 요일, `repeat_until`까지 반복
+- `repeat: monthly` → 매월 같은 날짜 (예: 15일)
+- `repeat: yearly` → 매년 같은 날짜 (예: 8월 1일)
 - UI에서 "다음: 8/7(금)" 식으로 표시 (실제 Issue 복제는 안 함)
 - 진짜 Issue 반복 자동 생성은 P1 이후 고려
 
