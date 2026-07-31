@@ -1,0 +1,1 @@
+{"name":"Life Manager","short_name":"LifeMgr","description":"개인 일정/할일 통합 관리","start_url":"/life-manager/","display":"standalone","background_color":"#000000","theme_color":"#000000","lang":"en","scope":"/life-manager/","icons":[{"src":"favicon.svg","sizes":"any","type":"image/svg+xml"}]}
