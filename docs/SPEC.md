@@ -10,11 +10,11 @@
 GitHub Issues를 Primary DB로 활용하여 일정/스케줄/마일스톤/위시리스트/투두리스트를 통합 관리하는 개인용 앱.
 
 ### 1.2 핵심 원칙
-- **No Backend Server (권장)**: GitHub API를 클라이언트에서 직접 호출
 - **GitHub Issues = Primary DB**: 모든 데이터는 `choyeun/life` repo의 Issues에 저장
 - **PWA 우선**: 웹앱(PWA) 먼저 개발, Android 네이티브는 Phase 2
 - **Obsidian Mirror**: Hermes cron이 주기적으로 Issues → Obsidian vault 동기화
 - **TDD + CI**: 모든 기능은 테스트로 검증, GitHub Actions 자동화
+- **백엔드 서버**: 선택 사항. GitHub API를 클라이언트에서 직접 호출 (권장), 필요시 백엔드 프록시 도입 가능
 
 ### 1.3 대상 플랫폼
 | Phase | 플랫폼 | 기술 스택 |
@@ -94,14 +94,16 @@ GitHub Issues를 Primary DB로 활용하여 일정/스케줄/마일스톤/위시
 ---
 date: 2026-08-01
 due: 2026-08-05
+repeat: weekly      # 선택: daily/weekly/monthly/yearly
+repeat_until: 2026-12-31  # 선택: 반복 종료일
 related: [42, 57]
 ---
 
 # 작업 제목
 
 ## 상세
-- [ ] 체크리스트 항목
-- [ ] ...
+- [ ] 체크리스트 항목 1
+- [ ] 체크리스트 항목 2
 
 ## 노트
 부가 설명...
@@ -122,7 +124,7 @@ GitHub Milestones 기능을 그대로 사용. 진행률 자동 계산.
 | UC-03 | 투두 수정: Issue 제목/내용/라벨 수정 |
 | UC-04 | 투두 완료: `The End` 라벨 추가 + Issue Close |
 | UC-05 | 투두 필터링: 라벨(유형/우선순위/위치/에너지/일정)별 필터 |
-| UC-06 | 투두 검색: 제목/내용 키워드 검색 |
+| UC-06 | 투두 검색: 제목/내용 키워드 검색 (캐시된 데이터를 클라이언트에서 필터링. GitHub 검색 API는 rate limit 별도) |
 
 ### 3.2 일정 관리
 | UC | 설명 |
@@ -130,7 +132,19 @@ GitHub Milestones 기능을 그대로 사용. 진행률 자동 계산.
 | UC-10 | 일정 조회: `📅 schedule` 라벨 Issue를 캘린더 뷰로 표시 |
 | UC-11 | 일정 생성: 날짜/시간 포함 Issue 생성 + `📅 schedule` 라벨 |
 | UC-12 | 일정 달력뷰: 월간/주간/일간 캘린더 |
-| UC-13 | 반복 일정: `🔁 반복` 라벨로 반복 일정 처리 |
+| UC-13 | 반복 일정: `🔁 반복` 라벨 + 프론트매터 `repeat:` 필드로 처리 |
+
+**반복 일정 상세:**
+
+| 프론트매터 필드 | 타입 | 예시 | 설명 |
+|:---------------|:----|:-----|:-----|
+| `repeat` | string | `daily`, `weekly`, `monthly`, `yearly` | 반복 주기 |
+| `repeat_until` | date | `2026-12-31` | 반복 종료일 (생략 시 무기한) |
+
+**처리 로직:**
+- `repeat: weekly` → 매주 같은 요일, `repeat_until`까지 반복
+- UI에서 "다음: 8/7(금)" 식으로 표시 (실제 Issue 복제는 안 함)
+- 진짜 Issue 반복 자동 생성은 P1 이후 고려
 
 ### 3.3 마일스톤 관리
 | UC | 설명 |
@@ -149,7 +163,7 @@ GitHub Milestones 기능을 그대로 사용. 진행률 자동 계산.
 ### 3.5 설정
 | UC | 설명 |
 |:---|:-----|
-| UC-40 | GitHub PAT 설정: 토큰 저장/테스트 |
+| UC-40 | GitHub PAT 설정: 토큰 저장/테스트. **필요 권한: `repo` (full) 또는 `issues: write` (Fine-grained PAT)** |
 | UC-41 | 테마 설정: 라이트/다크/블랙 |
 | UC-42 | Obsidian vault 경로 설정 |
 | UC-43 | 필터 기본값 설정 |
@@ -227,17 +241,24 @@ GitHub Milestones 기능을 그대로 사용. 진행률 자동 계산.
 
 ## 5. API 인터페이스
 
-### 5.1 GitHub API (GraphQL 우선)
+### 5.1 GitHub API 전략
 
-| 작업 | API | 비고 |
-|:----|:----|:-----|
-| Issue 목록 조회 | `search(query:"repo:choyeun/life label:✏️ todo")` | GraphQL Search |
-| Issue 상세 | `node(id: "...") { ... on Issue { ... } }` | GraphQL Node |
-| Issue 생성 | `createIssue(input: { ... })` | GraphQL Mutation |
-| Issue 수정 | `updateIssue(input: { ... })` | GraphQL Mutation |
-| Issue Close | `closeIssue(input: { ... })` | GraphQL Mutation |
-| 라벨 목록 | `repository(name: "life") { labels { ... } }` | GraphQL |
-| 마일스톤 목록 | `repository(name: "life") { milestones { ... } }` | GraphQL |
+**GraphQL 메인, REST fallback** — 확장성 고려. Issue가 수백 개로 늘어나도 GraphQL의 cursor pagination과 필드 선택으로 효율적 조회 가능.
+
+| 작업 | 메인 API | Fallback | 비고 |
+|:----|:---------|:---------|:-----|
+| Issue 목록 조회 | `search(query:"repo:choyeun/life label:✏️ todo")` | `GET /issues?labels=...` | GraphQL은 한 번에 필요한 필드만 |
+| Issue 상세 | `node(id: "...") { ... on Issue { ... } }` | `GET /issues/{number}` | |
+| Issue 생성 | `createIssue(input: { ... })` | `POST /issues` | |
+| Issue 수정/Close | `updateIssue` / `closeIssue` | `PATCH /issues/{number}` | |
+| 라벨 목록 | `repository.labels { nodes { ... } }` | `GET /labels` | |
+| 마일스톤 목록 | `repository.milestones { nodes { ... } }` | `GET /milestones` | |
+
+**선택 이유:**
+- Issue 100개+ 시 GraphQL은 1회 요청으로 모든 데이터 + 필터링 가능
+- REST는 페이지네이션 + 중복 데이터로 요청 수 증가
+- GitHub GraphQL은 cursor 기반 페이지네이션으로 대규모 데이터에 효율적
+- REST는 간단한 단일 조회에 fallback으로 사용
 
 ### 5.2 로컬 캐싱 (Rate Limit 대응)
 
@@ -247,6 +268,16 @@ GitHub Milestones 기능을 그대로 사용. 진행률 자동 계산.
 | 라벨 목록 | localStorage | 1시간 캐시 |
 | 마일스톤 | localStorage | 1시간 캐시 |
 | Issue 상세 | IndexedDB | ETag 기반 conditional request |
+| 변경 큐 (오프라인) | IndexedDB | 온라인 복귀 시 일괄 전송 |
+
+### 5.3 오프라인 동작 (PWA)
+
+| 상태 | 동작 |
+|:----|:-----|
+| 오프라인 목록 조회 | 캐시된 데이터 표시 + "오프라인" 배너 |
+| 오프라인 생성/수정 | **변경 큐에 저장** → 온라인 복귀 시 자동 전송 (GitHub API 호출) |
+| 오프라인 완료 처리 | 변경 큐에 저장 → 온라인 복귀 시 `The End` 라벨 + Close |
+| 충돌 | 전송 실패 시 재시도 + 에러 표시 |
 
 ---
 
@@ -276,7 +307,7 @@ GitHub Milestones 기능을 그대로 사용. 진행률 자동 계산.
 
 #### Weekly Note (P0에서 기본, P3에서 확장)
 ```markdown
-# {{date: YYYY) W## 주차
+# {{date:YYYY}} W## 주차
 
 ## ✅ 이번주 완료
 - #이슈번호 (완료)
@@ -352,9 +383,11 @@ jobs:
 
 | 리스크 | 대책 |
 |:-------|:-----|
-| GitHub API Rate Limit | 캐싱 + ETag |
-| LTE 속도 | PWA 오프라인 + 코드 스플리팅 |
-| OAuth 토큰 보안 | 필요시 Hermes 백엔드 프록시 |
+| GitHub API Rate Limit | 캐싱 + ETag + conditional request |
+| LTE 속도 | PWA 오프라인 + 변경 큐 + 코드 스플리팅 |
+| PAT 권한 부족 | `repo` 또는 `issues: write` Fine-grained PAT 필요 명시 |
+| OAuth 토큰 보안 | localStorage 암호화. 필요시 Hermes 백엔드 프록시 |
+| 검색 API rate limit | 클라이언트 사이드 필터링 (캐시 기반) |
 | Android Obsidian 접근 | Syncthing/WebDAV 경유 |
 
 ---
