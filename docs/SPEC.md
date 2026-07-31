@@ -19,8 +19,11 @@ GitHub Issues를 Primary DB로 활용하여 일정/스케줄/마일스톤/위시
 ### 1.3 대상 플랫폼
 | Phase | 플랫폼 | 기술 스택 |
 |-------|--------|-----------|
-| P0 | 웹 (PWA) | React 19 + Vite + TypeScript + Tailwind CSS v4 |
-| P2 | Android | Kotlin + Jetpack Compose + Material 3 |
+| **P0** | 웹 (PWA) | React 19 + Vite + TypeScript + Tailwind CSS v4 |
+| **P1-A** | 웹 (PWA) | Google Calendar API 연동 |
+| **P1-B** | 웹 (PWA) | Todoist API + 템플릿 + 쌍방연결 |
+| **P2** | Android | Kotlin + Jetpack Compose + Material 3 |
+| **P3** | 웹+Obsidian | Obsidian 계층 노트 + 통계 |
 
 ---
 
@@ -123,8 +126,9 @@ GitHub Milestones 기능을 그대로 사용. 진행률 자동 계산.
 | UC-02 | 투두 생성: 새 Issue 생성 + `✏️ todo` 라벨 자동 할당 |
 | UC-03 | 투두 수정: Issue 제목/내용/라벨 수정 |
 | UC-04 | 투두 완료: `The End` 라벨 추가 + Issue Close |
-| UC-05 | 투두 필터링: 라벨(유형/우선순위/위치/에너지/일정)별 필터 |
-| UC-06 | 투두 검색: 제목/내용 키워드 검색 (캐시된 데이터를 클라이언트에서 필터링. GitHub 검색 API는 rate limit 별도) |
+| UC-05 | 완료된 항목 보기: `state: closed`로 조회 (기본은 open만) |
+| UC-06 | 투두 필터링: 라벨(유형/우선순위/위치/에너지/일정)별 필터 |
+| UC-07 | 투두 검색: 제목/내용 키워드 검색 (캐시된 데이터를 클라이언트에서 필터링. GitHub 검색 API는 rate limit 별도) |
 
 ### 3.2 일정 관리
 | UC | 설명 |
@@ -164,7 +168,7 @@ GitHub Milestones 기능을 그대로 사용. 진행률 자동 계산.
 | UC | 설명 |
 |:---|:-----|
 | UC-40 | GitHub PAT 설정: 토큰 저장/테스트. **필요 권한: `repo` (full) 또는 `issues: write` (Fine-grained PAT)** |
-| UC-41 | 테마 설정: 라이트/다크/블랙 |
+| UC-41 | 테마 설정: 라이트 / 다크 / **블랙 (AMOLED #000000)** |
 | UC-42 | Obsidian vault 경로 설정 |
 | UC-43 | 필터 기본값 설정 |
 
@@ -230,7 +234,7 @@ GitHub Milestones 기능을 그대로 사용. 진행률 자동 계산.
 │ [연결 테스트]                │
 ├──────────────────────────────┤
 │ 테마                          │
-│ ○ 라이트  ● 다크  ○ 블랙     │
+│ ○ 라이트  ● 다크  ○ 블랙(AMOLED) │
 ├──────────────────────────────┤
 │ Obsidian Vault 경로           │
 │ [~/Obsidian/··············]  │
@@ -247,7 +251,8 @@ GitHub Milestones 기능을 그대로 사용. 진행률 자동 계산.
 
 | 작업 | 메인 API | Fallback | 비고 |
 |:----|:---------|:---------|:-----|
-| Issue 목록 조회 | `search(query:"repo:choyeun/life label:✏️ todo")` | `GET /issues?labels=...` | GraphQL은 한 번에 필요한 필드만 |
+| Issue 목록 조회 | `repository(name:"life") { issues { nodes { ... } } }` | `GET /issues?labels=...` | **search() 대신 repository.issues 사용** (search는 30/min rate limit 별도) |
+| Issue 검색 | `search(query:"repo:choyeun/life keyword")` | `GET /search/issues` | 검색에만 search API 사용 |
 | Issue 상세 | `node(id: "...") { ... on Issue { ... } }` | `GET /issues/{number}` | |
 | Issue 생성 | `createIssue(input: { ... })` | `POST /issues` | |
 | Issue 수정/Close | `updateIssue` / `closeIssue` | `PATCH /issues/{number}` | |
@@ -255,9 +260,9 @@ GitHub Milestones 기능을 그대로 사용. 진행률 자동 계산.
 | 마일스톤 목록 | `repository.milestones { nodes { ... } }` | `GET /milestones` | |
 
 **선택 이유:**
+- `repository.issues`는 search rate limit(30/min)을 소비하지 않음 → 목록 조회는 여기서
 - Issue 100개+ 시 GraphQL은 1회 요청으로 모든 데이터 + 필터링 가능
-- REST는 페이지네이션 + 중복 데이터로 요청 수 증가
-- GitHub GraphQL은 cursor 기반 페이지네이션으로 대규모 데이터에 효율적
+- 검색 기능만 `search()` 사용 (사용 빈도 낮음 → rate limit 안전)
 - REST는 간단한 단일 조회에 fallback으로 사용
 
 ### 5.2 로컬 캐싱 (Rate Limit 대응)
@@ -330,12 +335,12 @@ GitHub Milestones 기능을 그대로 사용. 진행률 자동 계산.
 ## 7. TDD 계획
 
 ### 7.1 테스트 스택
-| 도구 | 용도 |
-|:----|:-----|
-| Vitest | 단위 테스트 |
-| React Testing Library | 컴포넌트 테스트 |
-| MSW (Mock Service Worker) | GitHub API 모킹 |
-| Playwright | E2E 테스트 (선택) |
+| 도구 | 용도 | 비고 |
+|:----|:-----|:-----|
+| Vitest | 단위 테스트 | |
+| React Testing Library | 컴포넌트 테스트 | |
+| MSW (Mock Service Worker) | GitHub API 모킹 | **Node 모드 전용** (Vitest에서만 사용, 브라우저 SW 안 띄움). PWA Service Worker와 충돌 방지 |
+| Playwright | E2E 테스트 (선택) | **실제 GitHub API 호출** (테스트용 repo `choyeun/life-test` 생성 권장) |
 
 ### 7.2 테스트 대상
 | 레이어 | 테스트 내용 |
