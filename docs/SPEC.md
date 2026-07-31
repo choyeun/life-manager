@@ -22,7 +22,7 @@ GitHub Issues를 Primary DB로 활용하여 일정/스케줄/마일스톤/위시
 | **P0** | 웹 (PWA) | React 19 + Vite + TypeScript + Tailwind CSS v4 |
 | **P1-A** | 웹 (PWA) | Google Calendar API 연동 |
 | **P1-B** | 웹 (PWA) | Todoist API + 템플릿 + 쌍방연결 |
-| **P2** | Android | Kotlin + Jetpack Compose + Material 3 |
+| **P2** | Android | Kotlin + Jetpack Compose + Material 3 + 자동업데이트 |
 | **P3** | 웹+Obsidian | Obsidian 계층 노트 + 통계 |
 
 ---
@@ -393,7 +393,7 @@ jobs:
 | **P0** | 웹앱(React+Vite) + GitHub Issues CRUD + Obsidian 기록 | **준비 완료** (저장소 생성 + SPEC 완료, 개발 시작 대기) |
 | **P1-A** | Google Calendar 연동 | P0 완료 후 |
 | **P1-B** | Todoist + 템플릿 + 쌍방연결 | P1-A 완료 후 |
-| **P2** | Android 네이티브 앱 (Kotlin) | 장기 |
+| **P2** | Android 네이티브 앱 (Kotlin) + 자동업데이트 (novelpia_custom 로직 재사용) | 장기 |
 | **P3** | Obsidian 계층 노트 + 고급 기능 | 장기 |
 
 > 일정은 유동적. 군복무 환경(LTE only) 감안.
