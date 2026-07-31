@@ -19,7 +19,9 @@ GitHub Issues를 Primary DB로 활용하여 일정/스케줄/마일스톤/위시
 ### 1.3 대상 플랫폼
 | Phase | 플랫폼 | 기술 스택 |
 |-------|--------|-----------|
-| **P0** | 웹 (PWA) | React 19 + Vite + TypeScript + Tailwind CSS v4 |
+| **P0-A** | 웹 (PWA) | React 19 + Vite + TypeScript + Tailwind CSS v4 **(진짜 MVP)** |
+| **P0-B** | 웹 (PWA) | 일정/마일스톤/위시 추가 |
+| **P0-C** | 웹 (PWA) | 오프라인 + 검색 + Obsidian cron |
 | **P1-A** | 웹 (PWA) | Google Calendar API 연동 |
 | **P1-B** | 웹 (PWA) | Todoist API + 템플릿 + 쌍방연결 |
 | **P2** | Android | Kotlin + Jetpack Compose + Material 3 + 자동업데이트 |
@@ -197,9 +199,9 @@ GitHub Milestones 기능을 그대로 사용. 진행률 자동 계산.
 └── ⚙️ 설정        — 설정 페이지
 ```
 
-### 4.2 주요 화면 (P0)
+### 4.2 주요 화면
 
-#### 투두 목록 화면
+#### [P0-A] 투두 목록 화면
 ```
 ┌──────────────────────────────┐
 │ 🔍 검색  [필터: 유형 ▼]      │
@@ -218,7 +220,7 @@ GitHub Milestones 기능을 그대로 사용. 진행률 자동 계산.
 └──────────────────────────────┘
 ```
 
-#### 일정 화면 (달력)
+#### [P0-B] 일정 화면 (달력)
 ```
 ┌──────────────────────────────┐
 │  < 2026년 8월 >              │
@@ -395,10 +397,12 @@ jobs:
 
 | Phase | 범위 | 비고 |
 |-------|------|------|
-| **P0** | 웹앱(React+Vite) + GitHub Issues CRUD + Obsidian 기록 | **준비 완료** (저장소 생성 + SPEC 완료, 개발 시작 대기) |
+| **P0-A** | 투두 CRUD + 라벨 필터 + 다크모드 3종 + PAT 설정 + PWA 기본 | **진짜 MVP** (1~2주 목표) |
+| **P0-B** | 일정 달력뷰 + 마일스톤 뷰 + 위시리스트 CRUD | P0-A 완료 후 (+1주) |
+| **P0-C** | PWA 오프라인 변경 큐 + 검색 + Obsidian cron 동기화 | P0-B 완료 후 (+1~2주) |
 | **P1-A** | Google Calendar 연동 | P0 완료 후 |
 | **P1-B** | Todoist + 템플릿 + 쌍방연결 | P1-A 완료 후 |
-| **P2** | Android 네이티브 앱 (Kotlin) + 자동업데이트 (novelpia_custom 로직 재사용) | 장기 |
+| **P2** | Android 네이티브 앱 (Kotlin) + 자동업데이트 | 장기 |
 | **P3** | Obsidian 계층 노트 + 고급 기능 | 장기 |
 
 > 일정은 유동적. 군복무 환경(LTE only) 감안.
