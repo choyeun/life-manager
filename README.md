@@ -22,7 +22,9 @@ life-manager/
 
 | Phase | 내용 | 상태 |
 |-------|------|:----:|
-| P0 | 웹앱(React+Vite) + GitHub Issues CRUD + Obsidian cron | **준비 완료** |
+| P0-A | 투두 CRUD + 라벨 필터 + 다크모드 + PAT + PWA | **진짜 MVP (준비 완료)** |
+| P0-B | 일정 달력뷰 + 마일스톤 + 위시리스트 | 📅 대기 |
+| P0-C | PWA 오프라인 + 검색 + Obsidian cron | 📅 대기 |
 | P1-A | Google Calendar 연동 | 📅 예정 |
 | P1-B | Todoist + 템플릿 + 쌍방연결 | 📅 예정 |
 | P2 | Android 앱 (Kotlin) + 자동업데이트 | 📅 장기 |
