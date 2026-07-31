@@ -4,6 +4,7 @@
 
 > GitHub Issues를 Primary DB로 사용합니다.
 > Primary Data: [choyeun/life](https://github.com/choyeun/life)
+> **👉 [https://choyeun.github.io/life-manager/](https://choyeun.github.io/life-manager/)**
 
 ## 구조
 
