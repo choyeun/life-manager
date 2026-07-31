@@ -125,7 +125,7 @@ GitHub Milestones 기능을 그대로 사용. 진행률 자동 계산.
 | UC-01 | 투두 조회: `✏️ todo` 라벨이 있는 모든 Issue를 목록으로 표시 |
 | UC-02 | 투두 생성: 새 Issue 생성 + `✏️ todo` 라벨 자동 할당 |
 | UC-03 | 투두 수정: Issue 제목/내용/라벨 수정 |
-| UC-04 | 투두 완료: `The End` 라벨 추가 + Issue Close |
+| UC-04 | 투두 완료: `The End` 라벨 추가 (없으면 추가, 이미 있으면 스킵) + Issue Close |
 | UC-05 | 완료된 항목 보기: `state: closed`로 조회 (기본은 open만) |
 | UC-06 | 투두 필터링: 라벨(유형/우선순위/위치/에너지/일정)별 필터 |
 | UC-07 | 투두 검색: 제목/내용 키워드 검색 (캐시된 데이터를 클라이언트에서 필터링. GitHub 검색 API는 rate limit 별도) |
@@ -169,7 +169,7 @@ GitHub Milestones 기능을 그대로 사용. 진행률 자동 계산.
 |:---|:-----|
 | UC-40 | GitHub PAT 설정: 토큰 저장/테스트. **필요 권한: `repo` (full) 또는 `issues: write` (Fine-grained PAT)** |
 | UC-41 | 테마 설정: 라이트 / 다크 / **블랙 (AMOLED #000000)** |
-| UC-42 | Obsidian vault 경로 설정 |
+| UC-42 | Obsidian vault 경로 설정 **(P1+)**. P0에서는 Hermes cron 스크립트에 하드코딩 |
 | UC-43 | 필터 기본값 설정 |
 
 ### 3.6 연관 관계
@@ -236,8 +236,8 @@ GitHub Milestones 기능을 그대로 사용. 진행률 자동 계산.
 │ 테마                          │
 │ ○ 라이트  ● 다크  ○ 블랙(AMOLED) │
 ├──────────────────────────────┤
-│ Obsidian Vault 경로           │
-│ [~/Obsidian/··············]  │
+│ Obsidian Vault 경로 (P1+)     │
+│ [·······················]    │
 └──────────────────────────────┘
 ```
 
