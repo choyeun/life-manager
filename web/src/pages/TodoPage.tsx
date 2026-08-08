@@ -11,6 +11,7 @@ export function TodoPage() {
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [filter, setFilter] = useState('')
+  const [search, setSearch] = useState('')
   const [showClosed, setShowClosed] = useState(false)
 
   const loadData = async () => {
@@ -46,10 +47,13 @@ export function TodoPage() {
     setIssues((prev) => prev.filter((i) => i.number !== issueNumber))
   }
 
-  /** 라벨로 필터링 */
+  /** 검색어 + 라벨로 필터링 */
   const filteredIssues = issues.filter((issue) => {
-    if (!filter) return true
-    return issue.labels.some((l) => l.name.includes(filter))
+    const matchesLabel = !filter || issue.labels.some((l) => l.name.includes(filter))
+    const matchesSearch = !search.trim() || 
+      issue.title.toLowerCase().includes(search.toLowerCase()) ||
+      issue.body.toLowerCase().includes(search.toLowerCase())
+    return matchesLabel && matchesSearch
   })
 
   if (!hasToken()) {
@@ -82,6 +86,16 @@ export function TodoPage() {
           onCancel={() => setShowForm(false)}
         />
       )}
+
+      {/* 검색 */}
+      <input
+        type="text"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="🔍 검색..."
+        className="w-full px-3 py-2 rounded-lg border text-sm mb-3"
+        style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)', color: 'var(--text)' }}
+      />
 
       {/* 필터 */}
       <div className="flex gap-2 mb-4 overflow-x-auto pb-2">
