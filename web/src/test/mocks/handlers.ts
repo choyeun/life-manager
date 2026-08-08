@@ -76,7 +76,7 @@ export const handlers = [
       filtered = filtered.filter((i) => i.labels.some((l) => l.name === '💭 wishlist'))
     }
     if (milestone) {
-      filtered = filtered.filter((i) => i.milestone?.number === parseInt(milestone))
+      filtered = filtered.filter((i: any) => i.milestone?.number === parseInt(milestone))
     }
 
     return HttpResponse.json(filtered)
@@ -84,13 +84,14 @@ export const handlers = [
 
   // 단일 Issue 조회
   http.get(`${BASE}/repos/choyeun/life/issues/:number`, ({ params }) => {
-    const issue = mockIssues.find((i) => i.number === parseInt(params.number as string))
-    return HttpResponse.json(issue || { ...mockIssues[0], number: parseInt(params.number as string) })
+    const num = parseInt(params.number as string)
+    const issue = mockIssues.find((i) => i.number === num)
+    return HttpResponse.json(issue || { ...mockIssues[0], number: num })
   }),
 
   // Issue 생성
   http.post(`${BASE}/repos/choyeun/life/issues`, async ({ request }) => {
-    const body = await request.json() as any
+    const body = (await request.json()) as any
     const newIssue = {
       number: mockIssues.length + 1,
       title: body.title,
@@ -111,7 +112,7 @@ export const handlers = [
   }),
 
   // Issue Close
-  http.patch(`${BASE}/repos/choyeun/life/issues/:number`, ({ request }) => {
+  http.patch(`${BASE}/repos/choyeun/life/issues/:number`, () => {
     return HttpResponse.json({ ...mockIssues[0], state: 'closed' })
   }),
 
