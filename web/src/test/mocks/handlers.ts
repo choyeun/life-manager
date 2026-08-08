@@ -72,6 +72,9 @@ export const handlers = [
     if (labels === '📅 schedule') {
       filtered = filtered.filter((i) => i.labels.some((l) => l.name === '📅 schedule'))
     }
+    if (labels === '💭 wishlist') {
+      filtered = filtered.filter((i) => i.labels.some((l) => l.name === '💭 wishlist'))
+    }
     if (milestone) {
       filtered = filtered.filter((i) => i.milestone?.number === parseInt(milestone))
     }
