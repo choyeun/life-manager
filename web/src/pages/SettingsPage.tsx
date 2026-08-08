@@ -64,10 +64,10 @@ export function SettingsPage() {
             연결 테스트
           </button>
           {testResult === 'ok' && (
-            <span className="text-xs self-center" style={{ color: '#22c55e' }}>✅ 연결 성공</span>
+            <span className="text-xs self-center font-medium" style={{ color: 'var(--accent)' }}>✓ 연결 성공</span>
           )}
           {testResult === 'fail' && (
-            <span className="text-xs self-center" style={{ color: '#ef4444' }}>❌ 연결 실패</span>
+            <span className="text-xs self-center font-medium" style={{ color: 'var(--accent)' }}>✗ 연결 실패</span>
           )}
         </div>
       </section>
