@@ -1,8 +1,10 @@
 import { useState } from 'react'
+import { useTheme } from '../hooks/useTheme'
 import { saveToken, getSavedToken } from '../hooks/useConfig'
 import { setToken } from '../lib/github'
 
 export function SettingsPage() {
+  const { theme, setTheme } = useTheme()
   const [token, setTokenState] = useState(getSavedToken())
   const [testResult, setTestResult] = useState<'idle' | 'ok' | 'fail'>('idle')
 
@@ -70,12 +72,25 @@ export function SettingsPage() {
         </div>
       </section>
 
-      {/* 블랙(AMOLED) 고정 */}
+      {/* 블랙 앤 화이트 */}
       <section className="mb-6">
         <h2 className="text-sm font-medium mb-2">🎨 테마</h2>
-        <p className="text-xs" style={{ color: 'var(--muted)' }}>
-          ⬛ 블랙(AMOLED) — 고정. <code>#000000</code> 배경, 최소 전력 소모.
-        </p>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setTheme('white')}
+            className={`px-4 py-2 rounded-lg text-xs transition-all ${theme === 'white' ? 'ring-2 ring-[var(--border)]' : 'opacity-60'}`}
+            style={{ backgroundColor: '#ffffff', color: '#000000', border: '1px solid #ddd' }}
+          >
+            ▫️ 화이트
+          </button>
+          <button
+            onClick={() => setTheme('black')}
+            className={`px-4 py-2 rounded-lg text-xs transition-all ${theme === 'black' ? 'ring-2 ring-[var(--border)]' : 'opacity-60'}`}
+            style={{ backgroundColor: '#000000', color: '#ffffff', border: '1px solid #333' }}
+          >
+            ⬛ 블랙(AMOLED)
+          </button>
+        </div>
       </section>
 
       {/* Obsidian vault 경로 */}

@@ -5,14 +5,16 @@ import { MilestonePage } from './pages/MilestonePage'
 import { WishlistPage } from './pages/WishlistPage'
 import { SettingsPage } from './pages/SettingsPage'
 import { NavBar } from './components/NavBar'
+import { useTheme } from './hooks/useTheme'
 import { useConfig } from './hooks/useConfig'
 
 export default function App() {
+  const { theme } = useTheme()
   useConfig()
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen">
+      <div className={`min-h-screen ${theme === 'black' ? 'black' : ''}`}>
         <div className="max-w-2xl mx-auto px-4 pb-20">
           <Routes>
             <Route path="/" element={<Navigate to="/todos" replace />} />

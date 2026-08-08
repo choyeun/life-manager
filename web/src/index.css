@@ -1,15 +1,27 @@
 @import "tailwindcss";
 
-/* 블랙(AMOLED) 테마 - 고정 */
+/* 화이트 테마 (기본) */
 :root {
+  --bg: #ffffff;
+  --text: #000000;
+  --muted: #888888;
+  --border: #e5e5e5;
+  --card: #f5f5f5;
+  --accent: #000000;
+  --success: #000000;
+  --danger: #000000;
+}
+
+/* 블랙(AMOLED) 테마 */
+.black {
   --bg: #000000;
   --text: #ffffff;
   --muted: #888888;
   --border: #222222;
   --card: #0a0a0a;
-  --accent: #3b82f6;
-  --success: #22c55e;
-  --danger: #ef4444;
+  --accent: #ffffff;
+  --success: #ffffff;
+  --danger: #ffffff;
 }
 
 body {
@@ -17,31 +29,11 @@ body {
   color: var(--text);
 }
 
-/* react-calendar 다크 테마 오버라이드 */
-.react-calendar {
-  background: transparent !important;
-  border: none !important;
-  color: var(--text) !important;
-}
-.react-calendar__tile {
-  color: var(--text) !important;
-  background: transparent !important;
-}
+/* react-calendar */
+.react-calendar { background: transparent !important; border: none !important; color: var(--text) !important; }
+.react-calendar__tile { color: var(--text) !important; background: transparent !important; }
 .react-calendar__tile:enabled:hover,
-.react-calendar__tile:enabled:focus {
-  background: var(--card) !important;
-}
-.react-calendar__tile--active {
-  background: var(--accent) !important;
-  color: #fff !important;
-}
-.react-calendar__navigation button {
-  color: var(--text) !important;
-  background: transparent !important;
-}
-.react-calendar__month-view__weekdays__weekday {
-  color: var(--muted) !important;
-}
-.react-calendar__month-view__days__day--weekend {
-  color: var(--muted) !important;
-}
+.react-calendar__tile:enabled:focus { background: var(--card) !important; }
+.react-calendar__tile--active { background: var(--accent) !important; color: var(--bg) !important; }
+.react-calendar__navigation button { color: var(--text) !important; }
+.react-calendar__month-view__weekdays__weekday { color: var(--muted) !important; }
