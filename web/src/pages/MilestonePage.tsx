@@ -84,7 +84,7 @@ export function MilestonePage() {
           <div className="h-2 rounded-full" style={{ backgroundColor: 'var(--border)' }}>
             <div
               className="h-2 rounded-full transition-all"
-              style={{ width: `${progress}%`, backgroundColor: progress === 100 ? '#22c55e' : 'var(--accent)' }}
+              style={{ width: `${progress}%`, backgroundColor: 'var(--accent)' }}
             />
           </div>
         </div>

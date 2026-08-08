@@ -46,38 +46,11 @@ export function TodoItem({ issue, onComplete }: Props) {
 
           {/* 라벨 */}
           <div className="flex flex-wrap gap-1 mb-1">
-            {priorityLabels.map((l) => (
+            {[...priorityLabels, ...typeLabels, ...locationLabels, ...energyLabels].map((l) => (
               <span
                 key={l.name}
                 className="text-xs px-1.5 py-0.5 rounded"
-                style={{ backgroundColor: `#${l.color}33`, color: `#${l.color}` }}
-              >
-                {l.name}
-              </span>
-            ))}
-            {typeLabels.map((l) => (
-              <span
-                key={l.name}
-                className="text-xs px-1.5 py-0.5 rounded"
-                style={{ backgroundColor: `#${l.color}33`, color: `#${l.color}` }}
-              >
-                {l.name}
-              </span>
-            ))}
-            {locationLabels.map((l) => (
-              <span
-                key={l.name}
-                className="text-xs px-1.5 py-0.5 rounded"
-                style={{ backgroundColor: `#${l.color}33`, color: `#${l.color}` }}
-              >
-                {l.name}
-              </span>
-            ))}
-            {energyLabels.map((l) => (
-              <span
-                key={l.name}
-                className="text-xs px-1.5 py-0.5 rounded"
-                style={{ backgroundColor: `#${l.color}33`, color: `#${l.color}` }}
+                style={{ backgroundColor: 'var(--accent-bg)', color: 'var(--text)' }}
               >
                 {l.name}
               </span>

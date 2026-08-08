@@ -77,7 +77,7 @@ export function WishlistPage() {
           <button
             onClick={handleCreate}
             className="px-3 py-2 rounded-lg text-xs font-medium"
-            style={{ backgroundColor: 'var(--accent)', color: '#fff' }}
+            style={{ backgroundColor: 'var(--accent-bg)', color: 'var(--accent)' }}
           >
             추가
           </button>

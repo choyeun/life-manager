@@ -52,7 +52,7 @@ export function SettingsPage() {
           <button
             onClick={handleSaveToken}
             className="px-3 py-1.5 rounded-lg text-xs font-medium"
-            style={{ backgroundColor: 'var(--accent)', color: '#fff' }}
+            style={{ backgroundColor: 'var(--accent-bg)', color: 'var(--accent)' }}
           >
             저장
           </button>

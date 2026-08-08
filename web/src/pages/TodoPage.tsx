@@ -68,12 +68,12 @@ export function TodoPage() {
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-xl font-bold">📋 투두</h1>
         <button
-          onClick={() => setShowForm(true)}
-          className="px-3 py-1.5 rounded-lg text-sm font-medium"
-          style={{ backgroundColor: 'var(--accent)', color: '#fff' }}
-        >
-          + 새 투두
-        </button>
+                  onClick={() => setShowForm(true)}
+                  className="px-3 py-1.5 rounded-lg text-sm font-medium"
+                  style={{ backgroundColor: 'var(--accent-bg)', color: 'var(--accent)' }}
+                >
+                  + 새 투두
+                </button>
       </div>
 
       {showForm && (
@@ -98,11 +98,11 @@ export function TodoPage() {
             <button
               key={label.name}
               onClick={() => setFilter(filter === label.name ? '' : label.name)}
-              className={`px-2 py-1 rounded text-xs whitespace-nowrap ${filter === label.name ? 'font-bold ring-2' : 'opacity-70'}`}
+              className={`px-2 py-1 rounded text-xs whitespace-nowrap ${filter === label.name ? 'font-bold ring-2' : 'opacity-60'}`}
               style={{
-                backgroundColor: `#${label.color}22`,
-                color: `#${label.color}`,
-                borderColor: `#${label.color}`,
+                backgroundColor: 'var(--card)',
+                color: 'var(--text)',
+                borderColor: 'var(--border)',
               }}
             >
               {label.name}

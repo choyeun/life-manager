@@ -10,18 +10,20 @@
   --accent: #000000;
   --success: #000000;
   --danger: #000000;
+  --accent-bg: #e5e5e5;
 }
 
-/* 블랙(AMOLED) 테마 */
+/* 블랙(AMOLED) */
 .black {
   --bg: #000000;
   --text: #ffffff;
-  --muted: #888888;
+  --muted: #666666;
   --border: #222222;
-  --card: #0a0a0a;
+  --card: #111111;
   --accent: #ffffff;
   --success: #ffffff;
   --danger: #ffffff;
+  --accent-bg: #222222;
 }
 
 body {
@@ -29,11 +31,27 @@ body {
   color: var(--text);
 }
 
-/* react-calendar */
-.react-calendar { background: transparent !important; border: none !important; color: var(--text) !important; }
-.react-calendar__tile { color: var(--text) !important; background: transparent !important; }
+/* react-calendar 흑백 */
+.react-calendar {
+  background: transparent !important;
+  border: none !important;
+  color: var(--text) !important;
+}
+.react-calendar__tile {
+  color: var(--text) !important;
+  background: transparent !important;
+}
 .react-calendar__tile:enabled:hover,
-.react-calendar__tile:enabled:focus { background: var(--card) !important; }
-.react-calendar__tile--active { background: var(--accent) !important; color: var(--bg) !important; }
-.react-calendar__navigation button { color: var(--text) !important; }
-.react-calendar__month-view__weekdays__weekday { color: var(--muted) !important; }
+.react-calendar__tile:enabled:focus {
+  background: var(--card) !important;
+}
+.react-calendar__tile--active {
+  background: var(--accent) !important;
+  color: var(--bg) !important;
+}
+.react-calendar__navigation button {
+  color: var(--text) !important;
+}
+.react-calendar__month-view__weekdays__weekday {
+  color: var(--muted) !important;
+}
